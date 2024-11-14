@@ -1,3 +1,8 @@
+let x = 200;
+let y = 50;
+let platformX = 0;
+let platformY = 400;
+
 function setup() {
   createCanvas(580, 600);
 }
@@ -13,8 +18,71 @@ function cloud(x, y) {
   ellipse(x + 50, y + 195, 30);
 }
 
-let platformX = 0;
-let platformY = 400;
+function resultScreenFail() {
+  background(110, 250, 250);
+
+  cloud(20, 150);
+  cloud(150, 30);
+  cloud(400, 80);
+  cloud(250, 200);
+  cloud(400, -100);
+  cloud(20, -120);
+  cloud(500, 220);
+  cloud(520, 0);
+  cloud(100, 300);
+  cloud(350, 350);
+
+  fill(255, 0, 0);
+  rect(170, 230, 240, 150, 35);
+  fill(255);
+  textStyle(BOLD);
+  textSize(35);
+  text("FAILED", 230, 290, 50);
+}
+
+function resultScreenSuccess() {
+  background(110, 250, 250);
+
+  cloud(20, 150);
+  cloud(150, 30);
+  cloud(400, 80);
+  cloud(250, 200);
+  cloud(400, -100);
+  cloud(20, -120);
+  cloud(500, 220);
+  cloud(520, 0);
+  cloud(100, 300);
+  cloud(350, 350);
+
+  fill(5, 105, 0);
+  rect(170, 230, 240, 150, 35);
+  fill(255);
+  textStyle(BOLD);
+  textSize(35);
+  text("LANDED SAFELY", 220, 270, 50);
+}
+
+function startScreen() {
+  background(110, 250, 250);
+
+  cloud(20, 150);
+  cloud(150, 30);
+  cloud(400, 80);
+  cloud(250, 200);
+  cloud(400, -100);
+  cloud(20, -120);
+  cloud(500, 220);
+  cloud(520, 0);
+  cloud(100, 300);
+  cloud(350, 350);
+
+  fill(0, 5, 150);
+  rect(170, 230, 240, 150, 35);
+  fill(255);
+  textStyle(BOLD);
+  textSize(50);
+  text("START", 210, 325);
+}
 
 function platform(platformX, platformY) {
   noStroke();
@@ -30,10 +98,48 @@ function platform(platformX, platformY) {
   ellipse(platformX + 280, platformY + 90, 200, 25);
 }
 
+function helicopterGame() {
+  background(110, 250, 250);
+
+  cloud(20, 150);
+  cloud(150, 30);
+  cloud(400, 80);
+  cloud(250, 200);
+  cloud(400, -100);
+  cloud(20, -120);
+  cloud(500, 220);
+  cloud(520, 0);
+  cloud(100, 300);
+  cloud(350, 350);
+
+  platform(platformX, platformY);
+
+  character(x, y);
+
+  let direction = "down";
+  let helicopterY = 150;
+  let speed = 5;
+
+  //mechanics
+  if (direction === "down") {
+    if (y < 415) {
+      y = y + 8;
+    } else {
+      direction = "up";
+    }
+  } else if (direction === "up") {
+    if (y > 50) {
+      y = y - 3;
+    } else {
+      direction = "down";
+    }
+  }
+}
+
 function character(x, y) {
   push();
   translate(x, y);
-  scale(0.7);
+  scale(0.6);
   rotate(0);
   translate(-x, -y);
 
@@ -117,53 +223,29 @@ function character(x, y) {
   pop();
 }
 
-let x = 200;
-let y = 50;
-let direction = "down";
-let helicopterY = 150;
-let speed = 5;
+let state = "start";
 
 function draw() {
-  //visuals
-  background(110, 250, 250);
-
-  cloud(20, 150);
-  cloud(150, 30);
-  cloud(400, 80);
-  cloud(250, 200);
-  cloud(400, -100);
-  cloud(20, -120);
-  cloud(500, 220);
-  cloud(520, 0);
-
-  platform(platformX, platformY);
-
-  character(x, y);
-
-   //mechanics
-  if (direction === "down") {
-    if (y < 410) {
-      y = y + 8;
-    } else {
-      direction = "up";
-    }
-  } else if (direction === "up") {
-    if (y > 50) {
-      y = y - 3;
-    } else {
-      direction = "down";
-    }
-  } 
-
-      /*remember to change y to helicopterY 
-      when using this in character values
-     */
-  /* //  mechanics opt2
-      helicopterY = helicopterY + speed * -1;
-      if (helicopterY > 300 || helicopterY < 50) { 
-      speed = speed * -1;
-      console.log("boom");
-      }
-    } */
-
+  if (state === "start") {
+    startScreen();
+  } else if (state === "game") {
+    helicopterGame();
+  } else if (state === "success") {
+    resultScreenSuccess();
+  } else if (state === "fail") {
+    resultScreenFail();
+  }
 }
+
+function mouseClicked() {
+  if (state === "start") {
+    state = "game";
+  } else if (state === "game") {
+    state = "fail";
+  }
+}
+
+//work on buttons (pressing button and win/lose if statement)
+//acceleration
+//lose or win state
+//create lose helicopter on fire
