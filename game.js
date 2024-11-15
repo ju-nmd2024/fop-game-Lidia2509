@@ -1,11 +1,12 @@
 let x = 200;
-let y = 50; 
+let y = 50;
 let platformX = 0;
 let platformY = 400;
 let velocityY = 0.2;
 let acceleration = 1.1;
-let deacceleration = 0.8;
+let deceleration = 0.8;
 let hasLanded = false;
+let maxSpeed = 10;
 
 function setup() {
   createCanvas(600, 600);
@@ -37,11 +38,16 @@ function resultScreenFail() {
   cloud(350, 350);
 
   fill(255, 0, 0);
-  rect(170, 230, 240, 150, 35);
-  fill(255);
   textStyle(BOLD);
   textSize(35);
-  text("FAILED", 230, 290, 50);
+  text("FAILED", 230, 260, 50);
+
+  fill(235, 225, 20);
+  rect(170, 350, 240, 80, 30);
+  fill(0);
+  textStyle(BOLD);
+  textSize(20);
+  text("PLAY AGAIN", 230, 385, 200);
 }
 
 function resultScreenSuccess() {
@@ -59,11 +65,16 @@ function resultScreenSuccess() {
   cloud(350, 350);
 
   fill(5, 105, 0);
-  rect(170, 230, 240, 150, 35);
-  fill(255);
   textStyle(BOLD);
   textSize(35);
-  text("LANDED SAFELY", 220, 270, 50);
+  text("LANDED SAFELY", 220, 240, 50);
+
+  fill(235, 225, 20);
+  rect(170, 350, 240, 80, 30);
+  fill(0);
+  textStyle(BOLD);
+  textSize(20);
+  text("PLAY AGAIN", 230, 385, 200);
 }
 
 function startScreen() {
@@ -177,7 +188,7 @@ function character(x, y) {
 
 function platform(platformX, platformY) {
   noStroke();
-  fill(95, 110, 110);
+  fill(45, 170, 15);
   rect(platformX - 20, platformY + 100, width, 100);
 
   noStroke();
@@ -213,12 +224,21 @@ function helicopterGame() {
     velocityY = velocityY * acceleration;
 
     if (keyIsDown(32)) {
-      velocityY = velocityY * deacceleration;
+      velocityY = velocityY * deceleration;
+    }
+
+    if (velocityY > maxSpeed) {
+      state = "fail";
     }
   }
 
   if (y > 410) {
     hasLanded = true;
+    if (velocityY <= maxSpeed) {
+      state = "success";
+    } else {
+      state = "fail";
+    }
   }
 }
 
@@ -237,14 +257,38 @@ function draw() {
 }
 
 function mouseClicked() {
-  if (state === "start") {
+  let buttonStartX = 170;
+  let buttonStartY = 230;
+  let buttonPlayAgainX = 170;
+  let buttonPlayAgainY = 350;
+
+  if (
+    state === "start" &&
+    mouseX >= buttonStartX &&
+    mouseX <= buttonStartX + 240 &&
+    mouseY >= buttonStartY &&
+    mouseY <= buttonStartY + 150
+  ) {
     state = "game";
-  } else if (state === "game") {
-    state = "success";
+    resetGame();
+  } else if (
+    (state === "fail" || state === "success") &&
+    mouseX >= buttonPlayAgainX &&
+    mouseX <= buttonPlayAgainX + 240 &&
+    mouseY >= buttonPlayAgainY &&
+    mouseY <= buttonPlayAgainY + 80
+  ) {
+    state = "game";
+    resetGame();
   }
 }
 
-//work on buttons (pressing button and win/lose if statement)
-//acceleration
-//lose or win state
+function resetGame() {
+  x = 200;
+  y = 50;
+  velocityY = 0.2;
+  hasLanded = false;
+}
+
 //create lose helicopter on fire
+//aggiusta elicottero e fallo atterrare e andare a fuoco (non scomparire)
