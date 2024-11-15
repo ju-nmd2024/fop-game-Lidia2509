@@ -3,7 +3,9 @@ let y = 50;
 let platformX = 0;
 let platformY = 400;
 let velocityY = 0.2;
-let acceleration = 0.2;
+let acceleration = 1.1;
+let deacceleration = 0.8;
+let hasLanded = false;
 
 function setup() {
   createCanvas(600, 600);
@@ -84,71 +86,6 @@ function startScreen() {
   textStyle(BOLD);
   textSize(50);
   text("START", 210, 325);
-}
-
-function platform(platformX, platformY) {
-  noStroke();
-  fill(95, 110, 110);
-  rect(platformX - 20, platformY + 100, width, 100);
-
-  noStroke();
-  fill(10, 45, 150);
-  rect(platformX + 180, platformY + 90, 200, 25);
-  ellipse(platformX + 280, platformY + 115, 200, 25);
-
-  fill(10, 55, 190);
-  ellipse(platformX + 280, platformY + 90, 200, 25);
-}
-
-function helicopterGame() {
-  background(110, 250, 250);
-
-  cloud(20, 150);
-  cloud(150, 30);
-  cloud(400, 80);
-  cloud(250, 200);
-  cloud(400, -100);
-  cloud(20, -120);
-  cloud(500, 220);
-  cloud(520, 0);
-  cloud(100, 300);
-  cloud(350, 350);
-
-  platform(platformX + 20, platformY);
-
-  character(x + 30, y);
-
-  let direction = "down";
-  let helicopterY = 150;
-  let speed = 5;
-
-  //mechanics
-  if (direction === "down") {
-    if (y < 415) {
-      y = y + 8;
-    } else {
-      direction = "up";
-      velocityY = 0;
-    }
-  } else if (direction === "up") {
-    if (y > 50) {
-      y = y - 3;
-    } else {
-      direction = "down";
-    }
-  }
-
-  //accleration
-  y = y + velocityY;
-  velocityY = velocityY + acceleration;
-
-  function draw() {
-    if (keyIsDown(32)) {
-      if (mouseIsPressed) {
-        velocityY = velocityY - 0.7;
-      }
-    }
-  }
 }
 
 function character(x, y) {
@@ -236,6 +173,53 @@ function character(x, y) {
   rect(x + 60, y + 10, 30, 40, 10);
 
   pop();
+}
+
+function platform(platformX, platformY) {
+  noStroke();
+  fill(95, 110, 110);
+  rect(platformX - 20, platformY + 100, width, 100);
+
+  noStroke();
+  fill(10, 45, 150);
+  rect(platformX + 180, platformY + 90, 200, 25);
+  ellipse(platformX + 280, platformY + 115, 200, 25);
+
+  fill(10, 55, 190);
+  ellipse(platformX + 280, platformY + 90, 200, 25);
+}
+
+function helicopterGame() {
+  background(110, 250, 250);
+
+  cloud(20, 150);
+  cloud(150, 30);
+  cloud(400, 80);
+  cloud(250, 200);
+  cloud(400, -100);
+  cloud(20, -120);
+  cloud(500, 220);
+  cloud(520, 0);
+  cloud(100, 300);
+  cloud(350, 350);
+
+  platform(platformX + 20, platformY);
+
+  character(x + 30, y);
+
+  //mechanics
+  if (!hasLanded) {
+    y = y + velocityY;
+    velocityY = velocityY * acceleration;
+
+    if (keyIsDown(32)) {
+      velocityY = velocityY * deacceleration;
+    }
+  }
+
+  if (y > 410) {
+    hasLanded = true;
+  }
 }
 
 let state = "start";
