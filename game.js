@@ -2,9 +2,11 @@ let x = 200;
 let y = 50;
 let platformX = 0;
 let platformY = 400;
+let velocityY = 0.2;
+let acceleration = 0.2;
 
 function setup() {
-  createCanvas(580, 600);
+  createCanvas(600, 600);
 }
 
 function cloud(x, y) {
@@ -87,7 +89,7 @@ function startScreen() {
 function platform(platformX, platformY) {
   noStroke();
   fill(95, 110, 110);
-  rect(platformX, platformY + 100, width, 100);
+  rect(platformX - 20, platformY + 100, width, 100);
 
   noStroke();
   fill(10, 45, 150);
@@ -112,9 +114,9 @@ function helicopterGame() {
   cloud(100, 300);
   cloud(350, 350);
 
-  platform(platformX, platformY);
+  platform(platformX + 20, platformY);
 
-  character(x, y);
+  character(x + 30, y);
 
   let direction = "down";
   let helicopterY = 150;
@@ -126,12 +128,25 @@ function helicopterGame() {
       y = y + 8;
     } else {
       direction = "up";
+      velocityY = 0;
     }
   } else if (direction === "up") {
     if (y > 50) {
       y = y - 3;
     } else {
       direction = "down";
+    }
+  }
+
+  //accleration
+  y = y + velocityY;
+  velocityY = velocityY + acceleration;
+
+  function draw() {
+    if (keyIsDown(32)) {
+      if (mouseIsPressed) {
+        velocityY = velocityY - 0.7;
+      }
     }
   }
 }
@@ -241,7 +256,7 @@ function mouseClicked() {
   if (state === "start") {
     state = "game";
   } else if (state === "game") {
-    state = "fail";
+    state = "success";
   }
 }
 
