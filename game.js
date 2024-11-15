@@ -1,5 +1,5 @@
 let x = 200;
-let y = 50;
+let y = 50; 
 let platformX = 0;
 let platformY = 400;
 let velocityY = 0.2;
