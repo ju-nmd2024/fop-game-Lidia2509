@@ -23,6 +23,33 @@ function cloud(x, y) {
   ellipse(x + 50, y + 195, 30);
 }
 
+function fire(x, y) {
+  push();
+
+  translate(x, y);
+  scale(1.5);
+  translate(-x, -y);
+
+  noStroke();
+
+  fill(255, 0, 0, 200);
+  ellipse(x - 20, y, 30, 50);
+  ellipse(x + 20, y, 30, 50);
+  ellipse(x, y - 20, 50, 70);
+
+  fill(255, 165, 0, 200);
+  ellipse(x - 15, y + 5, 25, 40);
+  ellipse(x + 15, y + 5, 25, 40);
+  ellipse(x, y - 15, 40, 60);
+
+  fill(255, 255, 0, 200);
+  ellipse(x, y - 15, 20, 30);
+  ellipse(x - 8, y + 5, 20, 30);
+  ellipse(x + 8, y + 5, 20, 30);
+
+  pop();
+}
+
 function resultScreenFail() {
   background(110, 250, 250);
 
@@ -67,7 +94,8 @@ function resultScreenSuccess() {
   fill(5, 105, 0);
   textStyle(BOLD);
   textSize(35);
-  text("LANDED SAFELY", 220, 240, 50);
+  text("LANDED", 220, 240, 50);
+  text("SAFELY", 225, 280, 50);
 
   fill(235, 225, 20);
   rect(170, 350, 240, 80, 30);
@@ -77,7 +105,7 @@ function resultScreenSuccess() {
   text("PLAY AGAIN", 230, 385, 200);
 }
 
-function startScreen() {
+function startScreen(x, y) {
   background(110, 250, 250);
 
   cloud(20, 150);
@@ -87,8 +115,8 @@ function startScreen() {
   cloud(400, -100);
   cloud(20, -120);
   cloud(500, 220);
-  cloud(520, 0);
-  cloud(100, 300);
+  cloud(520, 0); 
+  cloud(100, 300); 
   cloud(350, 350);
 
   fill(0, 5, 150);
@@ -200,6 +228,27 @@ function platform(platformX, platformY) {
   ellipse(platformX + 280, platformY + 90, 200, 25);
 }
 
+function helicopterOnFire() {
+  background(110, 250, 250);
+
+  cloud(20, 150);
+  cloud(150, 30);
+  cloud(400, 80);
+  cloud(250, 200);
+  cloud(400, -100);
+  cloud(20, -120);
+  cloud(500, 220);
+  cloud(520, 0);
+  cloud(100, 300);
+  cloud(350, 350);
+
+  platform(platformX + 20, platformY);
+
+  character(x + 30, platformY + 15);
+
+  fire(x + 90, platformY + 30);
+}
+
 function helicopterGame() {
   background(110, 250, 250);
 
@@ -224,59 +273,57 @@ function helicopterGame() {
     velocityY = velocityY * acceleration;
 
     if (keyIsDown(32)) {
-      velocityY = velocityY * deceleration;
-    }
-
-    if (velocityY > maxSpeed) {
-      state = "fail";
+      velocityY = velocityY * deceleration; //velocityY - 0.8
     }
   }
 
-  if (y > 410) {
+  if (y > 420) {
     hasLanded = true;
     if (velocityY <= maxSpeed) {
       state = "success";
-    } else {
-      state = "fail";
+    } else if (velocityY > maxSpeed && y > platformY) {
+      state = "fire";
     }
   }
+  if (state === "fire") {
+    state = "fail";
+  }
 }
-
 let state = "start";
+let gameTimer = 0;
 
 function draw() {
   if (state === "start") {
     startScreen();
   } else if (state === "game") {
     helicopterGame();
-  } else if (state === "success") {
+    gameTimer = gameTimer + 1;
+  }
+  if (state === "success") {
     resultScreenSuccess();
   } else if (state === "fail") {
     resultScreenFail();
+  } else if (state === "fire") {
+    helicopterOnFire();
   }
 }
 
 function mouseClicked() {
-  let buttonStartX = 170;
-  let buttonStartY = 230;
-  let buttonPlayAgainX = 170;
-  let buttonPlayAgainY = 350;
-
   if (
     state === "start" &&
-    mouseX >= buttonStartX &&
-    mouseX <= buttonStartX + 240 &&
-    mouseY >= buttonStartY &&
-    mouseY <= buttonStartY + 150
+    mouseX >= 170 &&
+    mouseX <= 170 + 240 &&
+    mouseY >= 230 &&
+    mouseY <= 230 + 150
   ) {
     state = "game";
     resetGame();
   } else if (
     (state === "fail" || state === "success") &&
-    mouseX >= buttonPlayAgainX &&
-    mouseX <= buttonPlayAgainX + 240 &&
-    mouseY >= buttonPlayAgainY &&
-    mouseY <= buttonPlayAgainY + 80
+    mouseX >= 170 &&
+    mouseX <= 170 + 240 &&
+    mouseY >= 350 &&
+    mouseY <= 350 + 80
   ) {
     state = "game";
     resetGame();
@@ -290,5 +337,7 @@ function resetGame() {
   hasLanded = false;
 }
 
-//create lose helicopter on fire
-//aggiusta elicottero e fallo atterrare e andare a fuoco (non scomparire)
+//premendo space key a lungo non deve fermarsi MA andare verso l'alto
+//muovi lo sfondo
+//allunga tempo prima di avere result screen
+//migliora grafica visuale
