@@ -8,11 +8,11 @@ let deceleration = 0.8;
 let hasLanded = false;
 let maxSpeed = 10;
 
-function setup() {
+function setup() { 
   createCanvas(600, 600);
 }
 
-function cloud(x, y) {
+function cloud(x, y) { 
   noStroke();
   fill(255, 255, 255);
   rect(x - 50, y + 180, 100, 30);
@@ -41,33 +41,35 @@ function fire(x, y) {
   ellipse(x - 15, y + 5, 25, 40);
   ellipse(x + 15, y + 5, 25, 40);
   ellipse(x, y - 15, 40, 60);
-
+ 
   fill(255, 255, 0, 200);
   ellipse(x, y - 15, 20, 30);
   ellipse(x - 8, y + 5, 20, 30);
   ellipse(x + 8, y + 5, 20, 30);
 
   pop();
-}
+} 
 
 function resultScreenFail() {
   background(110, 250, 250);
 
   cloud(20, 150);
   cloud(150, 30);
-  cloud(400, 80);
+  cloud(400, 80); 
   cloud(250, 200);
   cloud(400, -100);
   cloud(20, -120);
   cloud(500, 220);
   cloud(520, 0);
-  cloud(100, 300);
+  cloud(100, 280);
   cloud(350, 350);
 
   fill(255, 0, 0);
   textStyle(BOLD);
-  textSize(35);
-  text("FAILED", 230, 260, 50);
+  textSize(50);
+  text("YOU", 235, 220, 50);
+  text("LOSE!", 225, 280, 50);
+
 
   fill(235, 225, 20);
   rect(170, 350, 240, 80, 30);
@@ -88,14 +90,13 @@ function resultScreenSuccess() {
   cloud(20, -120);
   cloud(500, 220);
   cloud(520, 0);
-  cloud(100, 300);
+  cloud(100, 280);
   cloud(350, 350);
 
   fill(5, 105, 0);
   textStyle(BOLD);
-  textSize(35);
-  text("LANDED", 220, 240, 50);
-  text("SAFELY", 225, 280, 50);
+  textSize(50);
+  text("YOU WIN!", 235, 220, 50);
 
   fill(235, 225, 20);
   rect(170, 350, 240, 80, 30);
@@ -104,6 +105,9 @@ function resultScreenSuccess() {
   textSize(20);
   text("PLAY AGAIN", 230, 385, 200);
 }
+
+let bushX = 280;
+let bushY = 340;
 
 function startScreen(x, y) {
   background(110, 250, 250);
@@ -115,16 +119,53 @@ function startScreen(x, y) {
   cloud(400, -100);
   cloud(20, -120);
   cloud(500, 220);
-  cloud(520, 0); 
-  cloud(100, 300); 
+  cloud(520, 0);
+  cloud(100, 280);
   cloud(350, 350);
 
-  fill(0, 5, 150);
-  rect(170, 230, 240, 150, 35);
+  push();
+  translate(bushX, bushY);
+  scale(0.8); 
+  translate(-bushX, -bushY);
+  fill(45, 170, 15);
+  ellipse(bushX - 150, bushY + 250, 80);
+  ellipse(bushX - 200, bushY + 200, 70);
+  ellipse(bushX - 250, bushY + 200, 80);
+  ellipse(bushX - 310, bushY + 280, 220);
+  ellipse(bushX - 210, bushY + 285, 130);
+  ellipse(bushX - 310, bushY + 180, 90, 80);
+  ellipse(bushX - 130, bushY + 310, 110, 100);
+  ellipse(bushX - 370, bushY + 200, 110, 100);
+
+
+  ellipse(bushX + 150, bushY + 250, 80);
+  ellipse(bushX + 200, bushY + 200, 70); 
+  ellipse(bushX + 250, bushY + 200, 80);
+  ellipse(bushX + 310, bushY + 280, 220);
+  ellipse(bushX + 210, bushY + 285, 130);
+  ellipse(bushX + 310, bushY + 180, 90, 80);
+  ellipse(bushX + 130, bushY + 310, 110, 100);
+  ellipse(bushX + 370, bushY + 200, 110, 100);
+
+  pop();
+
+  fill(0, 55, 150);
+  rect(170, 240, 240, 130, 35);
   fill(255);
   textStyle(BOLD);
   textSize(50);
   text("START", 210, 325);
+
+  fill(215, 120, 10);
+  textStyle(BOLD);
+  textSize(15);
+  text("**Press the Space key to control the helicopter", 120, 415);
+  text("and land safely on the platform**", 180, 440);
+
+  textSize(80);
+  fill(20, 150, 0);
+  text("LAND IT!", 130, 140);
+
 }
 
 function character(x, y) {
@@ -239,7 +280,7 @@ function helicopterOnFire() {
   cloud(20, -120);
   cloud(500, 220);
   cloud(520, 0);
-  cloud(100, 300);
+  cloud(100, 280);
   cloud(350, 350);
 
   platform(platformX + 20, platformY);
@@ -260,7 +301,7 @@ function helicopterGame() {
   cloud(20, -120);
   cloud(500, 220);
   cloud(520, 0);
-  cloud(100, 300);
+  cloud(100, 280);
   cloud(350, 350);
 
   platform(platformX + 20, platformY);
@@ -268,43 +309,45 @@ function helicopterGame() {
   character(x + 30, y);
 
   //mechanics
-  if (!hasLanded) {
-    y = y + velocityY;
-    velocityY = velocityY * acceleration;
+  if (hasLanded === false) { 
+    velocityY = velocityY + 0.2;
 
     if (keyIsDown(32)) {
-      velocityY = velocityY * deceleration; //velocityY - 0.8
+      velocityY = velocityY - 0.7;
     }
-  }
 
-  if (y > 420) {
-    hasLanded = true;
-    if (velocityY <= maxSpeed) {
-      state = "success";
-    } else if (velocityY > maxSpeed && y > platformY) {
-      state = "fire";
+    y = y + velocityY;
+
+    if (y > 420) {
+      hasLanded = true;
+      if (velocityY <= maxSpeed) {
+        state = "success";
+      } else {
+        state = "fire";
+      }
     }
-  }
-  if (state === "fire") {
-    state = "fail";
   }
 }
+
 let state = "start";
-let gameTimer = 0;
+let delayTimer = 0;
 
 function draw() {
   if (state === "start") {
     startScreen();
   } else if (state === "game") {
     helicopterGame();
-    gameTimer = gameTimer + 1;
-  }
-  if (state === "success") {
-    resultScreenSuccess();
-  } else if (state === "fail") {
-    resultScreenFail();
   } else if (state === "fire") {
     helicopterOnFire();
+    if (delayTimer < 30) {
+      delayTimer = delayTimer + 1;
+    } else {
+      state = "fail";
+    }
+  } else if (state === "fail") {
+    resultScreenFail();
+  } else if (state === "success") {
+    resultScreenSuccess();
   }
 }
 
@@ -335,9 +378,5 @@ function resetGame() {
   y = 50;
   velocityY = 0.2;
   hasLanded = false;
+  delayTimer = 0;
 }
-
-//premendo space key a lungo non deve fermarsi MA andare verso l'alto
-//muovi lo sfondo
-//allunga tempo prima di avere result screen
-//migliora grafica visuale
