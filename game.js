@@ -4,7 +4,7 @@ let x = 200;
 let y = 50;
 let bushX = 280;
 let bushY = 340;
-let platformX = 0;
+let platformX = 0; 
 let platformY = 420;
 
 //GRAPHICS 
@@ -287,10 +287,10 @@ function helicopterGame() {
 
   //helicopter mechanics
   if (hasLanded === false) {
-    velocityY = velocityY + 0.3;
+    velocityY = velocityY + 0.2;
 
     if (keyIsDown(32)) {
-      velocityY = velocityY - 0.8;
+      velocityY = velocityY - 0.7;
     }
 
     y = y + velocityY;
@@ -337,7 +337,7 @@ function draw() {
     helicopterGame();
   } else if (state === "fire") {
     helicopterOnFire();
-    if (gameTimer < 30) {
+    if (gameTimer < 60) {
       gameTimer = gameTimer + 1;
     } else {
       state = "fail";
