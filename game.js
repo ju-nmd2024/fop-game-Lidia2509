@@ -287,10 +287,10 @@ function helicopterGame() {
 
   //helicopter mechanics
   if (hasLanded === false) {
-    velocityY = velocityY + 0.2;
+    velocityY = velocityY + 0.3;
 
     if (keyIsDown(32)) {
-      velocityY = velocityY - 0.7;
+      velocityY = velocityY - 0.8;
     }
 
     y = y + velocityY;
@@ -337,7 +337,7 @@ function draw() {
     helicopterGame();
   } else if (state === "fire") {
     helicopterOnFire();
-    if (gameTimer < 60) {
+    if (gameTimer < 30) {
       gameTimer = gameTimer + 1;
     } else {
       state = "fail";
